@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <% include partials/head %>
+  </head>
+  <body>
+    <%include partials/header.ejs%>
+    <p>Welcome to Express</p>
+    <p>Online User: <%= countonline %></p>
+    <%if(!loggedin){%>
+        <div id="divlogin">
+          <form method="post" action="/login">
+            <input type="text" name="username" placeholder="input name"><br/>
+            <input type="password" name="password" placeholder="input password"><br/>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+        </div>
+    <%}else{%>
+        <div id="divlogout">
+          <form method="post" action="/logout">
+            <button type="submit" class="btn btn-secondary">Logout</button>
+          </form>
+        </div>
+    <%}%>
+    <%- messages('message', locals) %>
+    <%if(message!=null){%><%=message%><%}%>
+  </body>
+</html>

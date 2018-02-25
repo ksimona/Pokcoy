@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%include partials/head.ejs%>
+    </head>
+    <body>
+        <%include partials/header.ejs%>
+        <h1>welcome to shop, <%=user.name%></h1>
+        <form method="post" action="/shop/add" enctype="multipart/form-data">
+            <input type="text" name="name" placeholder="input item's name"><br/>
+            <input type="file" name="file"><br/>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <%- messages('message', locals) %>
+        <%=message%>
+
+        <div class="container">
+            <div class="row">
+            <%for(var i = 0; i< item.length;i++){%>
+                <div class="col-sm">
+                    <table>
+                        <tr>
+                            <td>
+                                <img width="100%" src='<%=item[i]%>'>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button name="test" class="buyItem">Buy</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            <%}%>
+            </div>
+        </div>
+    </body>
+    <script>
+        $(document).ready(function(){
+            $('.buyItem').click(function(){
+                $.ajax({
+                    type:'POST',
+                    url:window.location.href,
+                    data:{string:$(this).closest('div').find('img').attr('src')},
+                    success:function(data){
+                        alert(data);
+                    }
+                });
+            });
+        });
+    </script>
+</html>

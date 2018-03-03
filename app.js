@@ -29,7 +29,6 @@ var shop = require('./routes/shop');
 var cart = require('./routes/cart');
 
 var app = express();
-
 //passport config
 passport.serializeUser(function(user, done) {
     done(null, user);

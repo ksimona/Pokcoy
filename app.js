@@ -94,6 +94,4 @@ app.listen(3000,function(){
     console.log('server active');
 });
 
-module.exports = {
-    app:app
-};
+module.exports = app;

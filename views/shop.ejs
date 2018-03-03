@@ -5,7 +5,7 @@
     </head>
     <body>
         <%include partials/header.ejs%>
-        <h1>welcome to shop, <%=user.name%></h1>
+        <h1>welcome to shop, <%=user.displayName%></h1>
         <form method="post" action="/shop/add" enctype="multipart/form-data">
             <input type="text" name="name" placeholder="input item's name"><br/>
             <input type="file" name="file"><br/>

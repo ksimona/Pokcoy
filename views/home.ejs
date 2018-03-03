@@ -4,9 +4,9 @@
       <% include partials/head %>
   </head>
   <body>
+
     <%include partials/header.ejs%>
     <p>Welcome to Express</p>
-    <p>Online User: <%= countonline %></p>
     <%if(!loggedin){%>
         <div id="divlogin">
           <form method="post" action="/login">
@@ -15,6 +15,7 @@
             <button type="submit" class="btn btn-primary">Login</button>
           </form>
         </div>
+        <a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
     <%}else{%>
         <div id="divlogout">
           <form method="post" action="/logout">
@@ -22,6 +23,16 @@
           </form>
         </div>
     <%}%>
+    <form method="post" action="/register">
+        <input type="text" name="usernameReg" placeholder="input name"><br/>
+        <%if(typeof(errEmail)!='undefined'){%><%=errEmail%><br/><%}%>
+        <input type="password" name="passwordReg" placeholder="input password"><br/>
+        <%if(typeof(errPass)!='undefined'){%><%=errPass%><br/><%}%>
+        <button type="submit" class="btn btn-bd-primary">Register</button>
+    </form>
+    <form method="post" action="/sendMail">
+        <button type="submit" class="btn btn-bd-primary">Send Email</button>
+    </form>
     <%- messages('message', locals) %>
     <%if(message!=null){%><%=message%><%}%>
   </body>

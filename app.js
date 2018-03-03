@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var config = require('./config/database');
 var flash = require('connect-flash');
+var validator = require('express-validator');
 
 mongoose.connect(config.database);
 var db = mongoose.connection;
@@ -23,9 +24,6 @@ db.on('error',function(err){
     console.log(err);
 });
 
-
-var count = 0;
-
 var home = require('./routes/home');
 var shop = require('./routes/shop');
 var cart = require('./routes/cart');
@@ -33,6 +31,13 @@ var cart = require('./routes/cart');
 var app = express();
 
 //passport config
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+passport.deserializeUser(function(obj, done) {
+    done(null, obj);
+});
+require('./config/passportFacebook')(passport);
 require('./config/passport')(passport);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,6 +48,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(validator());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(sessions({secret: 'ssshhhhh',resave:true, saveUninitialized:true}));

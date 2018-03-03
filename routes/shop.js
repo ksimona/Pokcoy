@@ -7,6 +7,7 @@ var path = require('path');
 
 /* GET users listing. */
 router.get('/',checkAuth.checkAuth, function(req, res, next) {
+    console.log(req.user);
     fs.readdir('./public/images/',function(err,files){
         var arr = [];
         var count = 0;

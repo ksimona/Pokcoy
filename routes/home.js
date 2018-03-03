@@ -4,6 +4,8 @@ var url = require('url');
 var passport = require('passport');
 var checkAuth = require('../controller/checkAuthentication');
 var logout = require('../controller/logout');
+var fs = require('fs');
+var ejs = require('ejs');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -18,6 +20,36 @@ router.get('/', function(req, res, next) {
     // next();
 });
 
+router.get('/auth/facebook',function(req,res,next){
+    passport.authenticate('facebook',{scope : ['public_profile', 'email']})(req,res,next);
+});
+
+router.get('/auth/facebook/callback',function(req,res,next){
+    passport.authenticate('facebook', {
+        successRedirect : '/',
+        failureRedirect: '/'
+    })(req,res,next)
+});
+
+router.post('/register',function(req,res,next){
+    req.checkBody('usernameReg','enter a valid email').isEmail();
+    req.checkBody('passwordReg',"password can't be empty").notEmpty();
+    var errors = req.validationErrors();
+    if(errors){
+        var mail = errors.find(x=>x.param=='usernameReg');
+        var pass = errors.find(x=>x.param=='passwordReg');
+        var jsn = {};
+        if(mail){
+            jsn.errEmail = mail.msg;
+        }
+        jsn.errPass = pass?pass.msg:undefined;
+        res.render('home',jsn);
+    }
+    else{
+        res.sendStatus(200);
+    }
+});
+
 router.post('/login', function(req,res,next){
     passport.authenticate('local', function(err,user,info){
         if (err) { return next(err); }
@@ -27,6 +59,30 @@ router.post('/login', function(req,res,next){
             res.render('home', { countonline:req.session.countonline, loggedin:true });
         });
     })(req,res,next);
+});
+
+router.post('/sendMail',function(req,res,next){
+    const sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey('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');
+    var file = fs.readFileSync(__dirname+'/../views/emailPage.ejs','utf8');
+    var html = ejs.compile(file)({text:'and easy to do anywhere, even with Node.js'});
+    const msg = {
+        to: 'marcellinus_kristanto@hotmail.com',
+        from: 'test@ivh.me',
+        subject: 'Sending with SendGrid is Fun',
+        text: 'and easy to do anywhere, even with Node.js',
+        html: html
+    };
+    sgMail.send(msg,function(err,mssg){
+        if(err){
+            res.render('home',{message:'error sending email, try again!'});
+        }
+        else{
+            console.log(mssg);
+            req.flash('success','Email sent');
+            res.redirect('/');
+        }
+    });
 });
 
 router.post('/logout',checkAuth.checkAuth,logout);

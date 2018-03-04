@@ -6,6 +6,7 @@ var checkAuth = require('../controller/checkAuthentication');
 var logout = require('../controller/logout');
 var fs = require('fs');
 var ejs = require('ejs');
+var config = require('../config/config');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -63,11 +64,11 @@ router.post('/login', function(req,res,next){
 
 router.post('/sendMail',function(req,res,next){
     const sgMail = require('@sendgrid/mail');
-    sgMail.setApiKey('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');
+    sgMail.setApiKey(config.SendGridAPI);
     var file = fs.readFileSync(__dirname+'/../views/emailPage.ejs','utf8');
     var html = ejs.compile(file)({text:'and easy to do anywhere, even with Node.js'});
     const msg = {
-        to: 'marcellinus_kristanto@hotmail.com',
+        to: req.body.txtMail,
         from: 'test@ivh.me',
         subject: 'Sending with SendGrid is Fun',
         text: 'and easy to do anywhere, even with Node.js',
